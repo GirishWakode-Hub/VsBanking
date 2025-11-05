@@ -15,10 +15,10 @@ import Contact from './components/Contact';
 
 function App() {
   return (
-    <Router>
+    // 👇 yaha basename add kiya
+    <Router basename="/Bank-portal">
       <div className="App">
         <Header />
-        {/* ADD THIS MAIN CONTENT WRAPPER */}
         <main className="main-content">
           <Routes>
             <Route path="/" element={
@@ -35,7 +35,6 @@ function App() {
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
-        {/* END OF MAIN CONTENT WRAPPER */}
         <Footer />
       </div>
     </Router>

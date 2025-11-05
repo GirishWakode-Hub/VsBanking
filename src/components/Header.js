@@ -77,15 +77,7 @@ const Header = () => {
                 <i className="fas fa-chart-pie"></i> Finance Types
               </Link>
             </li>
-            <li>
-              <Link 
-                to="/financial-strategy" 
-                className={isActive('/financial-strategy') ? 'active' : ''}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="fas fa-chess-board"></i> Financial Strategy
-              </Link>
-            </li>
+            
             <li>
               <a 
                 href="#services"
