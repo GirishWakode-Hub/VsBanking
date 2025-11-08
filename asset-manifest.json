@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/VSBanking/static/css/main.798154d3.css",
+    "main.js": "/VSBanking/static/js/main.50a75be4.js",
+    "static/js/453.05f2e0c4.chunk.js": "/VSBanking/static/js/453.05f2e0c4.chunk.js",
+    "static/media/fa-solid-900.woff2": "/VSBanking/static/media/fa-solid-900.8ae0d37556ff1e685de2.woff2",
+    "static/media/fa-brands-400.woff2": "/VSBanking/static/media/fa-brands-400.1c5c7716b05754cb4eab.woff2",
+    "static/media/fa-regular-400.woff2": "/VSBanking/static/media/fa-regular-400.6f05ca9ab7b5345dbc07.woff2",
+    "static/media/fa-v4compatibility.woff2": "/VSBanking/static/media/fa-v4compatibility.e4340c52a50e727c6afa.woff2",
+    "index.html": "/VSBanking/index.html",
+    "main.798154d3.css.map": "/VSBanking/static/css/main.798154d3.css.map",
+    "main.50a75be4.js.map": "/VSBanking/static/js/main.50a75be4.js.map",
+    "453.05f2e0c4.chunk.js.map": "/VSBanking/static/js/453.05f2e0c4.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.798154d3.css",
+    "static/js/main.50a75be4.js"
+  ]
+}
