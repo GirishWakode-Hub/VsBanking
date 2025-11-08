@@ -15,7 +15,7 @@ import Contact from './components/Contact';
 
 function App() {
   return (
-    <Router basename="/VSBanking">
+    <Router basename="/VsBanking">
       <div className="App">
         <Header />
         <main className="main-content">
