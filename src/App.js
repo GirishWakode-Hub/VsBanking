@@ -16,7 +16,7 @@ import Contact from './components/Contact';
 function App() {
   return (
     // 👇 yaha basename add kiya
-    <Router basename="/Bank-portal">
+    <Router basename="/banking">
       <div className="App">
         <Header />
         <main className="main-content">

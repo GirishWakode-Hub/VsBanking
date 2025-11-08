@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path) => {
@@ -14,135 +15,252 @@ const Header = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  // Close mobile menu when clicking outside
+  // Handle body scroll when mobile menu is open
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isMobileMenuOpen && !event.target.closest('.nav-menu') && !event.target.closest('.hamburger')) {
-        setIsMobileMenuOpen(false);
-      }
+    if (isMobileMenuOpen) {
+      document.body.classList.add('mobile-menu-open');
+    } else {
+      document.body.classList.remove('mobile-menu-open');
+    }
+    
+    return () => {
+      document.body.classList.remove('mobile-menu-open');
     };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
   }, [isMobileMenuOpen]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleNavClick = (e, type, target) => {
-    if (type === 'section') {
-      e.preventDefault();
-      setIsMobileMenuOpen(false);
-      
-      if (location.pathname !== '/') {
-        window.location.href = `/#${target}`;
-      } else {
-        const section = document.getElementById(target);
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleSectionClick = (e, sectionId) => {
+    e.preventDefault();
+    closeMobileMenu();
+
+    if (location.pathname !== '/') {
+      // If not on home page, navigate to home page first with hash
+      navigate('/', { state: { scrollTo: sectionId } });
+    } else {
+      // If already on home page, scroll to section
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
         if (section) {
           section.scrollIntoView({ behavior: 'smooth' });
         }
-      }
+      }, 100);
     }
   };
 
+  // Scroll to section after navigation (if coming from section click)
+  useEffect(() => {
+    if (location.state?.scrollTo && location.pathname === '/') {
+      const sectionId = location.state.scrollTo;
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+        // Clear the state to prevent repeated scrolling
+        window.history.replaceState({}, document.title);
+      }, 500);
+    }
+  }, [location]);
+
   return (
     <header>
-      <div className="container header-container">
-        <Link to="/" className="logo">
-          <i className="fas fa-university"></i>
-          VS <span>Finance</span>
-        </Link>
+      <div className="container">
+        <div className="header-container">
+          {/* Logo */}
+          <Link to="/" className="logo" onClick={closeMobileMenu}>
+            <i className="fas fa-university"></i>
+            VS <span>Finance</span>
+          </Link>
 
-        {/* Hamburger Icon for Mobile */}
-        <button 
-          className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle navigation menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+          {/* Desktop Navigation */}
+          <nav className="desktop-nav">
+            <div className="nav-menu">
+              <ul>
+                <li>
+                  <Link 
+                    to="/finance-types" 
+                    className={isActive('/finance-types') ? 'active' : ''}
+                  >
+                    <i className="fas fa-chart-pie"></i>
+                    Finance Types
+                  </Link>
+                </li>
+                
+                <li>
+                  <a 
+                    href="#services"
+                    onClick={(e) => handleSectionClick(e, 'services')}
+                    className={location.pathname === '/' && window.location.hash === '#services' ? 'active' : ''}
+                  >
+                    <i className="fas fa-hand-holding-usd"></i>
+                    Services
+                  </a>
+                </li>
+                
+                <li>
+                  <a 
+                    href="#security"
+                    onClick={(e) => handleSectionClick(e, 'security')}
+                    className={location.pathname === '/' && window.location.hash === '#security' ? 'active' : ''}
+                  >
+                    <i className="fas fa-shield-alt"></i>
+                    Security
+                  </a>
+                </li>
+                
+                <li>
+                  <Link 
+                    to="/contact" 
+                    className={isActive('/contact') ? 'active' : ''}
+                  >
+                    <i className="fas fa-envelope"></i>
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-        {/* Navigation Menu */}
-        <nav className={`nav-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+            {/* Desktop Header Actions */}
+            <div className="header-actions">
+              <Link to="/open-account" className="cta-button secondary">
+                <i className="fas fa-plus"></i>
+                Open Account
+              </Link>
+              <Link to="/client-login" className="cta-button">
+                <i className="fas fa-user"></i>
+                Client Login
+              </Link>
+            </div>
+          </nav>
+
+          {/* Hamburger Menu Button */}
+          <button 
+            className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+        {/* Mobile Nav Header */}
+        <div className="mobile-nav-header">
+          <div className="mobile-logo">
+            <i className="fas fa-university"></i>
+            VS <span>Finance</span>
+          </div>
+          <button 
+            className="mobile-close-btn"
+            onClick={closeMobileMenu}
+            aria-label="Close menu"
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+
+        {/* Mobile Nav Content */}
+        <div className="mobile-nav-content">
           <ul>
             <li>
               <Link 
                 to="/finance-types" 
                 className={isActive('/finance-types') ? 'active' : ''}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
-                <i className="fas fa-chart-pie"></i> Finance Types
+                <i className="fas fa-chart-pie"></i>
+                Finance Types
               </Link>
             </li>
             
             <li>
               <a 
                 href="#services"
+                onClick={(e) => handleSectionClick(e, 'services')}
                 className={location.pathname === '/' && window.location.hash === '#services' ? 'active' : ''}
-                onClick={(e) => handleNavClick(e, 'section', 'services')}
               >
-                <i className="fas fa-hand-holding-usd"></i> Services
+                <i className="fas fa-hand-holding-usd"></i>
+                Services
               </a>
             </li>
+            
             <li>
               <a 
                 href="#security"
+                onClick={(e) => handleSectionClick(e, 'security')}
                 className={location.pathname === '/' && window.location.hash === '#security' ? 'active' : ''}
-                onClick={(e) => handleNavClick(e, 'section', 'security')}
               >
-                <i className="fas fa-shield-alt"></i> Security
+                <i className="fas fa-shield-alt"></i>
+                Security
               </a>
             </li>
+            
             <li>
               <Link 
                 to="/contact" 
                 className={isActive('/contact') ? 'active' : ''}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
-                <i className="fas fa-envelope"></i> Contact
-              </Link>
-            </li>
-            
-            {/* Mobile-only login button */}
-            <li className="mobile-login">
-              <Link 
-                to="/client-login" 
-                className="cta-button mobile"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="fas fa-user"></i> Client Login
-              </Link>
-            </li>
-
-            {/* Mobile-only open account button */}
-            <li className="mobile-open-account">
-              <Link 
-                to="/open-account" 
-                className="cta-button secondary mobile"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <i className="fas fa-plus"></i> Open Account
+                <i className="fas fa-envelope"></i>
+                Contact
               </Link>
             </li>
           </ul>
-        </nav>
+        </div>
 
-        {/* Desktop CTA Buttons */}
-        <div className="header-actions">
-          <Link to="/open-account" className="cta-button secondary">
-            <i className="fas fa-plus"></i> Open Account
+        {/* Mobile Nav Actions */}
+        <div className="mobile-nav-actions">
+          <Link 
+            to="/client-login" 
+            className="cta-button mobile"
+            onClick={closeMobileMenu}
+          >
+            <i className="fas fa-user"></i>
+            Client Login
           </Link>
-          <Link to="/client-login" className="cta-button">
-            <i className="fas fa-user"></i> Client Login
+          <Link 
+            to="/open-account" 
+            className="cta-button secondary mobile"
+            onClick={closeMobileMenu}
+          >
+            <i className="fas fa-plus"></i>
+            Open Account
           </Link>
+        </div>
+
+        {/* Mobile Contact Info */}
+        <div className="mobile-contact-info">
+          <div className="contact-item">
+            <i className="fas fa-phone"></i>
+            <span>1-800-FINANCE</span>
+          </div>
+          <div className="contact-item">
+            <i className="fas fa-envelope"></i>
+            <span>support@vsfinance.com</span>
+          </div>
+          <div className="contact-item">
+            <i className="fas fa-clock"></i>
+            <span>Mon-Fri: 9AM-6PM</span>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+      {/* Mobile Overlay */}
+      <div 
+        className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+        onClick={closeMobileMenu}
+      ></div>
     </header>
   );
 };
